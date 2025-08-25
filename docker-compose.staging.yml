@@ -1,0 +1,27 @@
+version: '3.9'
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: app
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+  redis:
+    image: redis:7-alpine
+  backend:
+    build: ./backend
+    environment:
+      DATABASE_URL: postgresql://user:password@postgres:5432/app
+      REDIS_URL: redis://redis:6379/0
+  frontend:
+    build: ./frontend
+    command: npm run build && npx serve -s dist -l 5173
+  caddy:
+    image: caddy:2-alpine
+    ports:
+      - "80:80"
+    volumes:
+      - ./Caddyfile.staging:/etc/caddy/Caddyfile
+    depends_on:
+      - backend
+      - frontend
