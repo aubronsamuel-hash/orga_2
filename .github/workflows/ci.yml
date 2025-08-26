@@ -20,11 +20,16 @@ jobs:
       - name: Lint (ruff)
         run: ruff check backend
       - name: Types (mypy)
-        run: mypy backend
-      - name: Tests (pytest)
+        run: mypy backend/app
+      - name: Tests (pytest + coverage)
         env:
           PYTHONPATH: backend
-        run: pytest -q
+        run: pytest -q --cov=backend/app
+      - name: Smoke (HTTP)
+        env:
+          API_BASE: http://127.0.0.1:8000
+          BACKEND_DIR: backend
+        run: bash tools/smoke_ci.sh
   frontend:
     runs-on: ubuntu-latest
     steps:
