@@ -1,34 +1,21 @@
-# Coulisses Crew MVP
+# Monorepo Coulisses Crew (Backend/Frontend)
 
-## Prerequis
-- Python 3.11+
-- Node 20
-- PowerShell 7
-- Docker (pour dev et staging)
+## Quickstart Windows
 
-## Setup
-```
-pwsh -NoLogo -NoProfile -File PS1/init_repo.ps1
-```
+* Python 3.13, Node 20, PowerShell
+* Backend:
+  * cd backend
+  * python -m pip install -U pip setuptools wheel
+  * python -m pip install -e .
+  * uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+* Frontend:
+  * cd frontend && npm ci && npm run dev
 
-## Developpement
-```
-pwsh -NoLogo -NoProfile -File PS1/dev_up.ps1
-```
-Backend: http://localhost:8000/healthz
-Frontend: http://localhost:5173
+## CI
 
-## Tests
-```
-pwsh -NoLogo -NoProfile -File PS1/test_all.ps1
-```
+* Backend: pip install -e backend, ruff check backend, mypy backend, pytest (PYTHONPATH=backend)
+* Frontend: ESLint v9 (flat config: eslint.config.js), Vitest jsdom (vitest.config.ts + tests/setup.ts)
 
-## Smoke
-```
-pwsh -NoLogo -NoProfile -File PS1/smoke.ps1
-```
+## Scripts PowerShell
 
-## Deploiement staging
-```
-docker compose -f docker-compose.staging.yml up -d
-```
+* PS1/test_all.ps1: lance l'ensemble des checks locaux (backend + frontend)
