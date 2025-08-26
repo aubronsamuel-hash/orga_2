@@ -9,27 +9,22 @@ function Fail($code, $msg){
     exit $code
 }
 
-# Python
-
 Write-Host "== PYTHON =="
 if (Test-Path "backend") {
     Push-Location backend
     python -m pip install -U pip setuptools wheel | Out-Host
     python -m pip install -e . | Out-Host
+    python -m pip install ruff mypy pytest | Out-Host
     ruff check . | Out-Host
     mypy . | Out-Host
-    if (Test-Path "..\tests") {
-        Pop-Location
-        $env:PYTHONPATH = "backend"
-        pytest -q | Out-Host
-    } else {
-        Pop-Location
-    }
+    Pop-Location
 } else {
     Fail 2 "PREREQUIS_MANQUANTS: dossier backend manquant."
 }
 
-# Node/Frontend
+Write-Host "== TESTS PYTHON =="
+$env:PYTHONPATH = "backend"
+pytest -q | Out-Host
 
 Write-Host "== FRONTEND =="
 if (Test-Path "frontend") {

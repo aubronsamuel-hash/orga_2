@@ -16,6 +16,11 @@
 * Backend: pip install -e backend, ruff check backend, mypy backend, pytest (PYTHONPATH=backend)
 * Frontend: ESLint v9 (flat config: eslint.config.js), Vitest jsdom (vitest.config.ts + tests/setup.ts)
 
+## CI - Outils dev
+
+* Le job Python installe ruff, mypy et pytest avant execution.
+* En local, utilisez: `pwsh -NoLogo -NoProfile -File PS1/test_all.ps1`.
+
 ## Scripts PowerShell
 
 * PS1/test_all.ps1: lance l'ensemble des checks locaux (backend + frontend)
