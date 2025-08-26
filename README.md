@@ -46,3 +46,7 @@ Endpoints clefs:
 * CRUD /api/v1/availability
 * GET /api/v1/availability/conflicts?mission_id=ID
 * GET /api/v1/missions/exports/ics?range=YYYY-MM-DD,YYYY-MM-DD
+
+## Notes de compatibilite
+
+* Python 3.13: utiliser `psycopg[binary]` en version 3.2.x (>=3.2,<3.3). Les versions 3.1.x n'ont pas de roue precompilee compatible et provoquent un echec `No matching distribution`.
