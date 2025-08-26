@@ -1,24 +1,31 @@
-from datetime import datetime, timedelta
+from fastapi.testclient import TestClient
+from datetime import datetime
+from backend.app.main import app
+from backend.app.models import Base
+from backend.app.db import engine
 
-from tests.backend.conftest import get_client
+client = TestClient(app)
 
 
-def test_conflict_detection() -> None:
-    client = get_client()
-    t = client.post("/technicians/", json={"name": "T1"}).json()
-    start = datetime.utcnow()
-    slot = {
+def setup_module():
+    Base.metadata.drop_all(bind=engine)
+    Base.metadata.create_all(bind=engine)
+
+
+def test_conflicts_unavailable_overlap():
+    t = client.post("/api/v1/technicians", json={"name": "Dan"}).json()
+    mid = client.post("/api/v1/missions", json={
+        "title": "Test",
+        "start": datetime(2025, 8, 29, 18, 0, 0).isoformat(),
+        "end": datetime(2025, 8, 29, 22, 0, 0).isoformat(),
+        "location": "X"
+    }).json()["id"]
+    client.post("/api/v1/availability", json={
         "technician_id": t["id"],
-        "start": start.isoformat(),
-        "end": (start + timedelta(hours=2)).isoformat(),
-    }
-    client.post("/availability/", json=slot)
-    mis = {
-        "title": "M1",
-        "technician_id": t["id"],
-        "start": (start + timedelta(minutes=10)).isoformat(),
-        "end": (start + timedelta(minutes=90)).isoformat(),
-    }
-    mission = client.post("/missions/", json=mis).json()
-    res = client.get(f"/missions/conflicts?mission_id={mission['id']}")
-    assert res.json() is False
+        "start": datetime(2025, 8, 29, 17, 0, 0).isoformat(),
+        "end": datetime(2025, 8, 29, 19, 0, 0).isoformat(),
+        "status": "unavailable"
+    })
+    r = client.get("/api/v1/availability/conflicts", params={"mission_id": mid})
+    assert r.status_code == 200
+    assert t["id"] in r.json()["technicians_conflicts"]
