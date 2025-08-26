@@ -26,7 +26,7 @@ Ce document resume les jalons pour livrer un MVP pret a deployer.
 ## Jalon 3 - Observabilite
 - Logs JSON
 - /metrics
-- Scripts smoke/logs
+- Scripts smoke/logs (CI bash + PowerShell)
 
 ## Jalon 4 - CI/CD
 - Workflows separes
@@ -44,3 +44,4 @@ Ce document resume les jalons pour livrer un MVP pret a deployer.
 - SECURITY.md, THREAT_MODEL.md
 
 * [x] Jalon 1 - Backend MVP (CRUD, conflicts, ICS, Alembic, tests)
+* [x] CI smoke HTTP (uvicorn Linux + smoke.ps1 Windows)
