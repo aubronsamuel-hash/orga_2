@@ -1,23 +1,23 @@
+from fastapi.testclient import TestClient
 from datetime import datetime, timedelta
+from backend.app.main import app
+from backend.app.models import Base
+from backend.app.db import engine
 
-from tests.backend.conftest import get_client
+client = TestClient(app)
 
+def setup_module():
+    Base.metadata.drop_all(bind=engine)
+    Base.metadata.create_all(bind=engine)
 
-def test_crud_mission() -> None:
-    client = get_client()
-    t = client.post("/technicians/", json={"name": "T1"}).json()
-    payload = {
-        "title": "M1",
-        "technician_id": t["id"],
-        "start": datetime.utcnow().isoformat(),
-        "end": (datetime.utcnow() + timedelta(hours=1)).isoformat(),
-    }
-    res = client.post("/missions/", json=payload)
-    assert res.status_code == 200
-    mis_id = res.json()["id"]
-
-    res = client.get(f"/missions/{mis_id}")
-    assert res.status_code == 200
-
-    res = client.delete(f"/missions/{mis_id}")
-    assert res.json()["ok"] is True
+def test_create_list_mission_and_ics():
+    start = datetime(2025,8,29,18,0,0).isoformat()
+    end = datetime(2025,8,29,22,0,0).isoformat()
+    r = client.post("/api/v1/missions", json={"title":"Show Soir","start":start,"end":end,"location":"Bobino"})
+    assert r.status_code == 201
+    mid = r.json()["id"]
+    r2 = client.get("/api/v1/missions")
+    assert r2.status_code == 200 and any(m["id"]==mid for m in r2.json())
+    r3 = client.get("/api/v1/missions/exports/ics", params={"range":"2025-08-01,2025-08-31"})
+    assert r3.status_code == 200
+    assert "BEGIN:VCALENDAR" in r3.text

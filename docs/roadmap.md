@@ -42,3 +42,5 @@ Ce document resume les jalons pour livrer un MVP pret a deployer.
 - Auth JWT
 - Scans
 - SECURITY.md, THREAT_MODEL.md
+
+* [x] Jalon 1 - Backend MVP (CRUD, conflicts, ICS, Alembic, tests)

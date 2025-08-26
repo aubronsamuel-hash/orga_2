@@ -1,5 +1,5 @@
-from .db import SessionLocal
 from . import models
+from .db import SessionLocal
 
 
 def run() -> None:
