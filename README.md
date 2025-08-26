@@ -33,8 +33,18 @@ pwsh PS1/seed.ps1
 ### Tests (backend)
 
 ```
-pwsh PS1/test_all.ps1
+pwsh -NoLogo -NoProfile -File PS1/test_all.ps1
 ```
+
+## Coverage (Python)
+
+* Le job CI installe `pytest-cov` et genere `coverage.xml`:
+
+  * `pytest -q --cov=backend/app --cov-report=xml:coverage.xml`
+* Artefact CI: `python-coverage-xml`.
+* Local Windows:
+
+  * `pwsh -NoLogo -NoProfile -File PS1/test_all.ps1`
 
 Endpoints clefs:
 
